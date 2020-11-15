@@ -6,14 +6,32 @@ public class Player : MonoBehaviour
 {
     // Start is called before the first frame update
 
+    // Player Parameters
+    public int pHealth;
+    public float pSpeed;
+
+    // Other Variables
     public GameObject playerChar;
+    GameObject guard;
+    AIScript aiGuard;
+
     Animator playerAnims;
 
     bool punch = true;
 
+    bool weaponHeld = false;
+
+    bool axeHold = false;
+    bool swordHold = false;
+    bool fists = true;
+
+    bool canAttack = false;
+
     void Start()
     {
+        guard = GameObject.Find("guard");
         playerAnims = GetComponent<Animator>();
+        aiGuard = guard.GetComponent<AIScript>();
     }
 
     // Update is called once per frame
@@ -23,7 +41,7 @@ public class Player : MonoBehaviour
         if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S))
         {
 
-            playerChar.transform.Translate(Vector3.forward * Time.deltaTime * 4);
+            playerChar.transform.Translate(Vector3.forward * Time.deltaTime * 8);
 
             if (Input.GetKey(KeyCode.D))
             {
@@ -58,11 +76,64 @@ public class Player : MonoBehaviour
         //Attack
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            if (punch == true)
+            if (axeHold == true && canAttack == true)
             {
-                playerAnims.SetBool("punching", true);
-                //playerAnims.SetBool("punching", false);
+                Debug.Log("Hit enemy with axe!");
+                aiGuard.aiHealth -= 2;
+                Debug.Log("Guard's Health is: " + aiGuard.aiHealth);
+            }
+
+            if (swordHold == true && canAttack == true)
+            {
+                Debug.Log("Hit enemy with sword!");
+                aiGuard.aiHealth -= 3;
+                Debug.Log("Guard's Health is: " + aiGuard.aiHealth);
+            }
+
+            if (fists == true && canAttack == true)
+            {
+                Debug.Log("Hit enemy with fists!");
+                aiGuard.aiHealth -= 1;
+                Debug.Log("Guard's Health is: " + aiGuard.aiHealth);
             }
         }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        Debug.Log("Collision!");
+
+        if (weaponHeld == false)
+        {
+            if (collision.collider.name.Contains("Axe"))
+            {
+                Debug.Log("Picked up Axe!");
+                Destroy(GameObject.Find("Axe"));
+                axeHold = true;
+                weaponHeld = true;
+                fists = false;
+            }
+
+            if (collision.collider.name.Contains("Sword"))
+            {
+                Debug.Log("Picked up Sword!");
+                Destroy(GameObject.Find("Sword"));
+                swordHold = true;
+                weaponHeld = true;
+                fists = false;
+            }
+        }
+
+        if (collision.collider.name.Contains("guard"))
+        {
+            Debug.Log("Press Space to attack!");
+            canAttack = true;
+        }
+        
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        canAttack = false;
     }
 }
