@@ -7,7 +7,7 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
 
     // Player Parameters
-    public int pHealth;
+    public int pHealth = 5;
     public float pSpeed;
 
     // Other Variables
@@ -23,6 +23,7 @@ public class Player : MonoBehaviour
 
     bool axeHold = false;
     bool swordHold = false;
+    bool spearHold = false;
     bool fists = true;
 
     bool canAttack = false;
@@ -81,12 +82,13 @@ public class Player : MonoBehaviour
             if (axeHold == true)
             {
                 playerAnims.SetBool("attacking", true);
+                Debug.Log("Axe Attack");
                 canMove = false;
                 StartCoroutine(animReset());
                 if (canMove == true)
                 {
                     Debug.Log("Hit enemy with axe!");
-                    aiGuard.aiHealth -= 2;
+                    aiGuard.aiHealth -= 3;
                     Debug.Log("Guard's Health is: " + aiGuard.aiHealth);
                 }
             }
@@ -100,7 +102,21 @@ public class Player : MonoBehaviour
                 if (canAttack == true)
                 {
                     Debug.Log("Hit enemy with sword!");
-                    aiGuard.aiHealth -= 3;
+                    aiGuard.aiHealth -= 2;
+                    Debug.Log("Guard's Health is: " + aiGuard.aiHealth);
+                }
+            }
+
+            if (spearHold == true)
+            {
+                playerAnims.SetBool("attacking", true);
+                Debug.Log("Spear Attack");
+                canMove = false;
+                StartCoroutine(animReset());
+                if (canAttack == true)
+                {
+                    Debug.Log("Hit enemy with sword!");
+                    aiGuard.aiHealth -= 2;
                     Debug.Log("Guard's Health is: " + aiGuard.aiHealth);
                 }
             }
@@ -130,6 +146,7 @@ public class Player : MonoBehaviour
             {
                 Debug.Log("Picked up Axe!");
                 Destroy(GameObject.Find("Axe"));
+                Destroy(GameObject.Find("AxePart"));
                 axeHold = true;
                 weaponHeld = true;
                 fists = false;
@@ -139,7 +156,18 @@ public class Player : MonoBehaviour
             {
                 Debug.Log("Picked up Sword!");
                 Destroy(GameObject.Find("Sword"));
+                Destroy(GameObject.Find("SwordPart"));
                 swordHold = true;
+                weaponHeld = true;
+                fists = false;
+            }
+
+            if (collision.collider.name.Contains("Spear"))
+            {
+                Debug.Log("Picked up Spear!");
+                Destroy(GameObject.Find("Spear"));
+                Destroy(GameObject.Find("SpearPart"));
+                spearHold = true;
                 weaponHeld = true;
                 fists = false;
             }
@@ -169,6 +197,12 @@ public class Player : MonoBehaviour
         }
 
         else if (swordHold == true)
+        {
+            playerAnims.SetBool("attacking", false);
+            canMove = true;
+        }
+
+        else if (spearHold == true)
         {
             playerAnims.SetBool("attacking", false);
             canMove = true;
