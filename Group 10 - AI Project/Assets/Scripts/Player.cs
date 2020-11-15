@@ -17,7 +17,7 @@ public class Player : MonoBehaviour
 
     Animator playerAnims;
 
-    bool punch = true;
+    bool canMove = true;
 
     bool weaponHeld = false;
 
@@ -40,31 +40,33 @@ public class Player : MonoBehaviour
         //Movement
         if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S))
         {
-
-            playerChar.transform.Translate(Vector3.forward * Time.deltaTime * 8);
-
-            if (Input.GetKey(KeyCode.D))
+            if (canMove == true)
             {
-                playerChar.transform.rotation = Quaternion.Euler(0.0f, -90.0f, 0.0f);
-            }
+                playerChar.transform.Translate(Vector3.forward * Time.deltaTime * 8);
 
-            if (Input.GetKey(KeyCode.A))
-            {
-                playerChar.transform.rotation = Quaternion.Euler(0.0f, 90.0f, 0.0f);
-            }
+                if (Input.GetKey(KeyCode.D))
+                {
+                    playerChar.transform.rotation = Quaternion.Euler(0.0f, -90.0f, 0.0f);
+                }
 
-            if (Input.GetKey(KeyCode.W))
-            {
-                playerChar.transform.rotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);
-            }
+                if (Input.GetKey(KeyCode.A))
+                {
+                    playerChar.transform.rotation = Quaternion.Euler(0.0f, 90.0f, 0.0f);
+                }
 
-            if (Input.GetKey(KeyCode.S))
-            {
-                playerChar.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
-            }
+                if (Input.GetKey(KeyCode.W))
+                {
+                    playerChar.transform.rotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);
+                }
 
-            playerAnims.SetBool("isRunning", true);
-            playerAnims.SetBool("stops", false);
+                if (Input.GetKey(KeyCode.S))
+                {
+                    playerChar.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
+                }
+
+                playerAnims.SetBool("isRunning", true);
+                playerAnims.SetBool("stops", false);
+            }
         }
 
         else
@@ -76,25 +78,44 @@ public class Player : MonoBehaviour
         //Attack
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            if (axeHold == true && canAttack == true)
+            if (axeHold == true)
             {
-                Debug.Log("Hit enemy with axe!");
-                aiGuard.aiHealth -= 2;
-                Debug.Log("Guard's Health is: " + aiGuard.aiHealth);
+                playerAnims.SetBool("attacking", true);
+                canMove = false;
+                StartCoroutine(animReset());
+                if (canMove == true)
+                {
+                    Debug.Log("Hit enemy with axe!");
+                    aiGuard.aiHealth -= 2;
+                    Debug.Log("Guard's Health is: " + aiGuard.aiHealth);
+                }
             }
 
-            if (swordHold == true && canAttack == true)
+            if (swordHold == true)
             {
-                Debug.Log("Hit enemy with sword!");
-                aiGuard.aiHealth -= 3;
-                Debug.Log("Guard's Health is: " + aiGuard.aiHealth);
+                playerAnims.SetBool("attacking", true);
+                Debug.Log("Sword Slash");
+                canMove = false;
+                StartCoroutine(animReset());
+                if (canAttack == true)
+                {
+                    Debug.Log("Hit enemy with sword!");
+                    aiGuard.aiHealth -= 3;
+                    Debug.Log("Guard's Health is: " + aiGuard.aiHealth);
+                }
             }
 
-            if (fists == true && canAttack == true)
+            if (fists == true)
             {
-                Debug.Log("Hit enemy with fists!");
-                aiGuard.aiHealth -= 1;
-                Debug.Log("Guard's Health is: " + aiGuard.aiHealth);
+                playerAnims.SetBool("attacking", true);
+                canMove = false;
+                StartCoroutine(animReset());
+                if (canAttack == true)
+                {
+                    Debug.Log("Hit enemy with fists!");
+                    aiGuard.aiHealth -= 1;
+                    Debug.Log("Guard's Health is: " + aiGuard.aiHealth);
+                }
             }
         }
     }
@@ -135,5 +156,28 @@ public class Player : MonoBehaviour
     private void OnCollisionExit(Collision collision)
     {
         canAttack = false;
+    }
+
+    public IEnumerator animReset()
+    {
+        yield return new WaitForSeconds(0.5f);
+
+        if (fists == true)
+        {
+            playerAnims.SetBool("attacking", false);
+            canMove = true;
+        }
+
+        else if (swordHold == true)
+        {
+            playerAnims.SetBool("attacking", false);
+            canMove = true;
+        }
+
+        else if (axeHold == true)
+        {
+            playerAnims.SetBool("attacking", false);
+            canMove = true;
+        }
     }
 }

@@ -16,11 +16,13 @@ public class AIScript : MonoBehaviour
     //Other Variables
     public GameObject guardPf;
 
+    Vector3 guardSpawnPos;
+
     bool isKO = false;
 
     void Start()
     {
-        
+        guardSpawnPos = guardPf.transform.position;
     }
 
     // Update is called once per frame
@@ -29,7 +31,17 @@ public class AIScript : MonoBehaviour
         if (aiHealth <= 0)
         {
             isKO = true;
-            Destroy(guardPf);
+            guardPf.transform.position = new Vector3(0.0f, 0.0f, -80.0f);
+            StartCoroutine(guardRespawn());
         }
+    }
+
+    public IEnumerator guardRespawn()
+    {
+        aiHealth = 5;
+        isKO = false;
+        yield return new WaitForSeconds(4f);
+        guardPf.transform.position = guardSpawnPos;
+        Debug.Log("Respawned guard at: " + guardSpawnPos);
     }
 }

@@ -79,8 +79,8 @@ ModelImporter:
       name: Sword Slash
       takeName: Armature|Armature.001|mixamo.com|Layer0.001
       internalID: 0
-      firstFrame: 0
-      lastFrame: 62
+      firstFrame: 29
+      lastFrame: 51
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
