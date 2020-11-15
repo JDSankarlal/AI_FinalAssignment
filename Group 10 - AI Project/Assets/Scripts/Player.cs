@@ -15,6 +15,8 @@ public class Player : MonoBehaviour
     GameObject guard;
     AIScript aiGuard;
 
+    Vector3 backupPos;
+
     Animator playerAnims;
 
     bool canMove = true;
@@ -26,6 +28,8 @@ public class Player : MonoBehaviour
     bool spearHold = false;
     bool fists = true;
 
+    bool flee = false;
+
     bool canAttack = false;
 
     void Start()
@@ -33,6 +37,7 @@ public class Player : MonoBehaviour
         guard = GameObject.Find("guard");
         playerAnims = GetComponent<Animator>();
         aiGuard = guard.GetComponent<AIScript>();
+        backupPos = playerChar.transform.position;
     }
 
     // Update is called once per frame
@@ -134,6 +139,14 @@ public class Player : MonoBehaviour
                 }
             }
         }
+        if (flee == true)
+        {
+            Debug.Log("Player fled the arena");
+            playerChar.transform.position = new Vector3(0.0f, 0.0f, -90.0f);
+            Debug.Log(playerChar.transform.position);
+            //Respawn player to arena with full health
+            StartCoroutine(timeout());
+        }
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -178,12 +191,27 @@ public class Player : MonoBehaviour
             Debug.Log("Press Space to attack!");
             canAttack = true;
         }
+
+        if (collision.collider.name.Contains("FleeBox"))
+        {
+            Debug.Log("Fleeing");
+            flee = true;
+        }
         
     }
 
     private void OnCollisionExit(Collision collision)
     {
         canAttack = false;
+    }
+
+    public IEnumerator timeout()
+    {
+        yield return new WaitForSeconds(1.0f);
+        Debug.Log("Respawned");
+        playerChar.transform.position = backupPos;
+        pHealth = 5;
+        flee = false;
     }
 
     public IEnumerator animReset()

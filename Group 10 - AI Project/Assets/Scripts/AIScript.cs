@@ -37,6 +37,7 @@ public class AIScript : MonoBehaviour
 
     bool aiRun = false;
     bool aiAtk = false;
+    bool aiFlee = false;
 
     void Start()
     {
@@ -49,6 +50,7 @@ public class AIScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //AI repawn condition
         if (aiHealth <= 0)
         {
             isKO = true;
@@ -56,6 +58,7 @@ public class AIScript : MonoBehaviour
             StartCoroutine(guardRespawn());
         }
 
+        //Chase weapon condition
         if (chaseAxe == true)
         {
             guardPf.transform.position = Vector3.MoveTowards(guardPf.transform.position, new Vector3(GameObject.Find("Axe").transform.position.x, guardPf.transform.position.y, GameObject.Find("Axe").transform.position.z), 0.1f);
@@ -80,6 +83,7 @@ public class AIScript : MonoBehaviour
             aiRun = true;
         }
 
+        //Running condition
         if (aiRun == true)
         {
             aiAnim.SetBool("isRunning", true);
@@ -92,11 +96,19 @@ public class AIScript : MonoBehaviour
             aiAnim.SetBool("stop", true);
         }
 
+        //Atk condition
         if (aiAtk == true)
         {
             //Debug.Log("Attacking");
             aiAnim.SetBool("aiAtk", true);
             StartCoroutine(animReset());
+        }
+
+        //Flee condition
+        if (aiFlee == true)
+        {
+            guardPf.transform.position = Vector3.MoveTowards(guardPf.transform.position, new Vector3(GameObject.Find("FleeBox").transform.position.x, guardPf.transform.position.y, GameObject.Find("FleeBox").transform.position.z), 0.1f);
+            aiRun = true;
         }
 
         //Debug
@@ -124,6 +136,11 @@ public class AIScript : MonoBehaviour
         {
             chasePlayer = true;
         }
+
+        if (Input.GetKeyDown(KeyCode.U))
+        {
+            aiFlee = true;
+        }
     }
 
     public IEnumerator guardRespawn()
@@ -137,8 +154,8 @@ public class AIScript : MonoBehaviour
 
     public IEnumerator aiAtkTimeout()
     {
-        Debug.Log("Timeout");
         yield return new WaitForSeconds(1f);
+        Debug.Log("Timeout");
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -216,6 +233,15 @@ public class AIScript : MonoBehaviour
                 aiFists = false;
                 aiRun = false;
             }
+        }
+
+        //AI Flee
+        if (collision.collider.name.Contains("FleeBox"))
+        {
+            aiFlee = false;
+            aiRun = false;
+            Debug.Log("Guard fled the arena");
+            //Code for respawn similar to player
         }
     }
 
