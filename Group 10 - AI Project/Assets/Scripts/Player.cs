@@ -158,8 +158,8 @@ public class Player : MonoBehaviour
             if (collision.collider.name.Contains("Axe"))
             {
                 Debug.Log("Picked up Axe!");
-                Destroy(GameObject.Find("Axe"));
-                Destroy(GameObject.Find("AxePart"));
+                GameObject.Find("Axe").transform.position = new Vector3(0.0f, 0.0f, -80.0f);
+                GameObject.Find("AxePart").transform.position = new Vector3(0.0f, 0.0f, -80.0f);
                 axeHold = true;
                 weaponHeld = true;
                 fists = false;
@@ -168,8 +168,8 @@ public class Player : MonoBehaviour
             if (collision.collider.name.Contains("Sword"))
             {
                 Debug.Log("Picked up Sword!");
-                Destroy(GameObject.Find("Sword"));
-                Destroy(GameObject.Find("SwordPart"));
+                GameObject.Find("Sword").transform.position = new Vector3(0.0f, 0.0f, -80.0f);
+                GameObject.Find("SwordPart").transform.position = new Vector3(0.0f, 0.0f, -80.0f);
                 swordHold = true;
                 weaponHeld = true;
                 fists = false;
@@ -178,8 +178,8 @@ public class Player : MonoBehaviour
             if (collision.collider.name.Contains("Spear"))
             {
                 Debug.Log("Picked up Spear!");
-                Destroy(GameObject.Find("Spear"));
-                Destroy(GameObject.Find("SpearPart"));
+                GameObject.Find("Spear").transform.position = new Vector3(0.0f, 0.0f, -80.0f);
+                GameObject.Find("SpearPart").transform.position = new Vector3(0.0f, 0.0f, -80.0f);
                 spearHold = true;
                 weaponHeld = true;
                 fists = false;

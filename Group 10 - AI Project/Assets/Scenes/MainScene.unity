@@ -96,6 +96,7 @@ LightmapSettings:
     m_PVRFilteringAtrousPositionSigmaAO: 1
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
+    m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
   m_UseShadowmask: 1
 --- !u!196 &4
@@ -253,16 +254,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 7183197672988132342, guid: cd563c23f47d8834b8480f35acc8efe3,
-        type: 3}
-      propertyPath: m_Name
-      value: AxePart
-      objectReference: {fileID: 0}
-    - target: {fileID: 7183197672988132342, guid: cd563c23f47d8834b8480f35acc8efe3,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 512794240293382245, guid: cd563c23f47d8834b8480f35acc8efe3,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -318,6 +309,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7183197672988132342, guid: cd563c23f47d8834b8480f35acc8efe3,
+        type: 3}
+      propertyPath: m_Name
+      value: AxePart
+      objectReference: {fileID: 0}
+    - target: {fileID: 7183197672988132342, guid: cd563c23f47d8834b8480f35acc8efe3,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cd563c23f47d8834b8480f35acc8efe3, type: 3}
 --- !u!1 &705507993
@@ -345,8 +346,9 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 705507993}
   m_Enabled: 1
-  serializedVersion: 9
+  serializedVersion: 10
   m_Type: 1
+  m_Shape: 0
   m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
   m_Intensity: 1
   m_Range: 10
@@ -418,11 +420,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 7412145251818496238, guid: d16abfa8dabf4d44288a89d5ec716532,
+    - target: {fileID: 4471054961907548039, guid: d16abfa8dabf4d44288a89d5ec716532,
         type: 3}
-      propertyPath: m_Name
-      value: guard
-      objectReference: {fileID: 0}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 063dee8557aebc646a81e2fa36b7b141, type: 2}
     - target: {fileID: 5802434078366733053, guid: d16abfa8dabf4d44288a89d5ec716532,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -478,11 +480,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4471054961907548039, guid: d16abfa8dabf4d44288a89d5ec716532,
+    - target: {fileID: 7412145251818496238, guid: d16abfa8dabf4d44288a89d5ec716532,
         type: 3}
-      propertyPath: m_Controller
-      value: 
-      objectReference: {fileID: 9100000, guid: 063dee8557aebc646a81e2fa36b7b141, type: 2}
+      propertyPath: m_Name
+      value: guard
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d16abfa8dabf4d44288a89d5ec716532, type: 3}
 --- !u!1 &744288282
@@ -528,9 +530,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 0
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!23 &744288285
 MeshRenderer:
@@ -546,6 +548,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -585,16 +588,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 7183197672988132342, guid: f9cf0662e852a7243935bd2b53d2a2f0,
-        type: 3}
-      propertyPath: m_Name
-      value: SwordPart
-      objectReference: {fileID: 0}
-    - target: {fileID: 7183197672988132342, guid: f9cf0662e852a7243935bd2b53d2a2f0,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 512794240293382245, guid: f9cf0662e852a7243935bd2b53d2a2f0,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -648,6 +641,16 @@ PrefabInstance:
     - target: {fileID: 512794240293382245, guid: f9cf0662e852a7243935bd2b53d2a2f0,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7183197672988132342, guid: f9cf0662e852a7243935bd2b53d2a2f0,
+        type: 3}
+      propertyPath: m_Name
+      value: SwordPart
+      objectReference: {fileID: 0}
+    - target: {fileID: 7183197672988132342, guid: f9cf0662e852a7243935bd2b53d2a2f0,
+        type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -801,9 +804,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 0
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!23 &1055019464
 MeshRenderer:
@@ -819,6 +822,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -936,6 +940,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1115,9 +1120,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 0
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!23 &1391962473
 MeshRenderer:
@@ -1133,6 +1138,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1172,11 +1178,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2516258060755452774, guid: 0970ce51fae216a43b7ce2642bd74bfb,
-        type: 3}
-      propertyPath: m_Name
-      value: player
-      objectReference: {fileID: 0}
     - target: {fileID: 1490922954142003573, guid: 0970ce51fae216a43b7ce2642bd74bfb,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1247,6 +1248,11 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 1.5
       objectReference: {fileID: 0}
+    - target: {fileID: 2516258060755452774, guid: 0970ce51fae216a43b7ce2642bd74bfb,
+        type: 3}
+      propertyPath: m_Name
+      value: player
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0970ce51fae216a43b7ce2642bd74bfb, type: 3}
 --- !u!1 &1570944897 stripped
@@ -1274,6 +1280,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   aiHealth: 5
+  pHealth: 5
+  aiPos: 0
+  pPos: 0
   guardPf: {fileID: 1687968659}
 --- !u!114 &1687968661
 MonoBehaviour:
@@ -1314,7 +1323,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 84
+  m_Constraints: 94
   m_CollisionDetection: 0
 --- !u!1 &1805549158
 GameObject:
@@ -1359,9 +1368,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 0
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!23 &1805549161
 MeshRenderer:
@@ -1377,6 +1386,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1447,16 +1457,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 7183197672988132342, guid: 22347f5b9b4f447489de59b8a7fbf5be,
-        type: 3}
-      propertyPath: m_Name
-      value: SpearPart
-      objectReference: {fileID: 0}
-    - target: {fileID: 7183197672988132342, guid: 22347f5b9b4f447489de59b8a7fbf5be,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 512794240293382245, guid: 22347f5b9b4f447489de59b8a7fbf5be,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1512,6 +1512,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7183197672988132342, guid: 22347f5b9b4f447489de59b8a7fbf5be,
+        type: 3}
+      propertyPath: m_Name
+      value: SpearPart
+      objectReference: {fileID: 0}
+    - target: {fileID: 7183197672988132342, guid: 22347f5b9b4f447489de59b8a7fbf5be,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 22347f5b9b4f447489de59b8a7fbf5be, type: 3}
 --- !u!1 &28251864718430751 stripped
@@ -1527,11 +1537,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 3687152739608731260, guid: d22c5ba83ad8b04469527183dfbd8a7d,
-        type: 3}
-      propertyPath: m_Name
-      value: Spear
-      objectReference: {fileID: 0}
     - target: {fileID: 391879385028389999, guid: d22c5ba83ad8b04469527183dfbd8a7d,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1586,6 +1591,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 172.51
+      objectReference: {fileID: 0}
+    - target: {fileID: 3687152739608731260, guid: d22c5ba83ad8b04469527183dfbd8a7d,
+        type: 3}
+      propertyPath: m_Name
+      value: Spear
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d22c5ba83ad8b04469527183dfbd8a7d, type: 3}

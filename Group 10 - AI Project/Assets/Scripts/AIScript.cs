@@ -1,25 +1,36 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class AIScript : MonoBehaviour
 {
     // Start is called before the first frame update
 
     //AI Parameters
-    public int aiHealth = 5;
-    float aiSpeed;
+    public float aiHealth = 5.0f;
+    public float pHealth = 5.0f;
+
+    public float aiPos;
+    public float pPos;
+
     float axeDistance;
     float swordDistance;
     float spearDistance;
 
+    float xRand;
+    float zRand;
+
     NeuralNetwork ntwrk;
-    float[] inputs = { 0.6f, 0.8f, 0.9f };
-    float[] outputs = { 0.0f, 0.0f, 0.0f };
 
-    int[] layers = { 7, 3, 4 };
+    //Sets up input layer array
+    float[] inputs = { 0.0f, 0.0f, 0.0f, 0.0f};
 
-    float netOutputs;
+    //Sets up output layer array
+    float[] outputs;
+
+    //Sets up the input, hidden, and output layers
+    int[] layers = {7, 3, 4 };
 
     //Other Variables
     public GameObject guardPf;
@@ -48,6 +59,10 @@ public class AIScript : MonoBehaviour
     bool aiAtk = false;
     bool aiFlee = false;
 
+    int guardCount = 1;
+
+    bool isDeciding = false;
+
     void Start()
     {
         guardSpawnPos = guardPf.transform.position;
@@ -66,32 +81,41 @@ public class AIScript : MonoBehaviour
         if (aiHealth <= 0)
         {
             isKO = true;
+            chaseAxe = false;
+            chaseSpear = false;
+            chaseSword = false;
+            chasePlayer = false;
             guardPf.transform.position = new Vector3(0.0f, 0.0f, -80.0f);
             StartCoroutine(guardRespawn());
+            Debug.Log("Guard #: " + guardCount + " has appeared!");
+            guardCount += 1;
+
+            //Copy Neural Net Data here:
+
         }
 
         //Chase weapon condition
         if (chaseAxe == true)
         {
-            guardPf.transform.position = Vector3.MoveTowards(guardPf.transform.position, new Vector3(GameObject.Find("Axe").transform.position.x, guardPf.transform.position.y, GameObject.Find("Axe").transform.position.z), 0.1f);
+            guardPf.transform.position = Vector3.MoveTowards(guardPf.transform.position, new Vector3(GameObject.Find("Axe").transform.position.x, guardPf.transform.position.y, GameObject.Find("Axe").transform.position.z), 0.03f);
             aiRun = true;
         }
 
         if (chaseSword == true)
         {
-            guardPf.transform.position = Vector3.MoveTowards(guardPf.transform.position, new Vector3(GameObject.Find("Sword").transform.position.x, guardPf.transform.position.y, GameObject.Find("Sword").transform.position.z), 0.1f);
+            guardPf.transform.position = Vector3.MoveTowards(guardPf.transform.position, new Vector3(GameObject.Find("Sword").transform.position.x, guardPf.transform.position.y, GameObject.Find("Sword").transform.position.z), 0.03f);
             aiRun = true;
         }
 
         if (chaseSpear == true)
         {
-            guardPf.transform.position = Vector3.MoveTowards(guardPf.transform.position, new Vector3(GameObject.Find("Spear").transform.position.x, guardPf.transform.position.y, GameObject.Find("Spear").transform.position.z), 0.1f);
+            guardPf.transform.position = Vector3.MoveTowards(guardPf.transform.position, new Vector3(GameObject.Find("Spear").transform.position.x, guardPf.transform.position.y, GameObject.Find("Spear").transform.position.z), 0.03f);
             aiRun = true;
         }
 
         if (chasePlayer == true)
         {
-            guardPf.transform.position = Vector3.MoveTowards(guardPf.transform.position, new Vector3(GameObject.Find("player").transform.position.x, guardPf.transform.position.y, GameObject.Find("player").transform.position.z), 0.1f);
+            guardPf.transform.position = Vector3.MoveTowards(guardPf.transform.position, new Vector3(GameObject.Find("player").transform.position.x, guardPf.transform.position.y, GameObject.Find("player").transform.position.z), 0.03f);
             aiRun = true;
         }
 
@@ -119,7 +143,7 @@ public class AIScript : MonoBehaviour
         //Flee condition
         if (aiFlee == true)
         {
-            guardPf.transform.position = Vector3.MoveTowards(guardPf.transform.position, new Vector3(GameObject.Find("FleeBox").transform.position.x, guardPf.transform.position.y, GameObject.Find("FleeBox").transform.position.z), 0.1f);
+            guardPf.transform.position = Vector3.MoveTowards(guardPf.transform.position, new Vector3(GameObject.Find("FleeBox").transform.position.x, guardPf.transform.position.y, GameObject.Find("FleeBox").transform.position.z), 0.03f);
             aiRun = true;
         }
 
@@ -160,10 +184,63 @@ public class AIScript : MonoBehaviour
             aiRun = false;
         }
 
+        // Neural Net
+        //if (Input.GetKeyDown(KeyCode.M))
+        //{
+        //    isDeciding = true;
+        //}
+
+        if (Input.GetKeyDown(KeyCode.N))
+        {
+            isDeciding = false;
+        }
+
         if (Input.GetKeyDown(KeyCode.M))
         {
+            aiPos = GameObject.Find("guard").transform.position.x + GameObject.Find("guard").transform.position.z;
+            Debug.Log("AI Pos: " + aiPos);
+
+            pPos = GameObject.Find("player").transform.position.x + GameObject.Find("player").transform.position.z;
+            Debug.Log("Player Pos: " + pPos);
+
+            inputs[0] = aiPos;
+            inputs[1] = pPos;
+            inputs[2] = aiHealth;
+            inputs[3] = pPos;
+
             outputs = ntwrk.feedFrwrd(inputs);
-            Debug.Log("Outputs are: " + outputs[1] + outputs[2] + outputs[3]);
+            Debug.Log("Outputs are: " + outputs[0] + "," + outputs[1] + ", " + outputs[2] + ", " + outputs[3]);
+
+            //Check which output is higher and assign output to an action:
+            if (outputs.Max() == outputs[0])
+            {
+                //Do output action #1
+                Debug.Log("Chasing player");
+                chasePlayer = true;
+                aiFists = true;
+            }
+
+            if (outputs.Max() == outputs[1])
+            {
+                //Do output action #2
+                Debug.Log("Using axe");
+                chaseAxe = true;
+            }
+
+            if (outputs.Max() == outputs[2])
+            {
+                //Do output action #3
+                Debug.Log("Using sword");
+                chaseSword = true;
+            }
+
+            if (outputs.Max() == outputs[3])
+            {
+                //Do output action #3
+                Debug.Log("Using spear");
+                chaseSpear = true;
+            }
+
         }
     }
 
@@ -194,28 +271,39 @@ public class AIScript : MonoBehaviour
             {
                 Debug.Log("Hit by Axe");
                 playerVals.pHealth -= 3;
-                StartCoroutine(aiAtkTimeout());
+                chasePlayer = false;
+                aiAxe = false;
+                aiRun = false;
+                aiWeaponHold = false;
             }
 
             if (aiSword == true)
             {
                 Debug.Log("Hit by Sword");
                 playerVals.pHealth -= 2;
-                StartCoroutine(aiAtkTimeout());
+                chasePlayer = false;
+                aiSword = false;
+                aiRun = false;
+                aiWeaponHold = false;
             }
 
             if (aiSpear == true)
             {
                 Debug.Log("Hit by Spear");
                 playerVals.pHealth -= 2;
-                StartCoroutine(aiAtkTimeout());
+                chasePlayer = false;
+                aiSpear = false;
+                aiRun = false;
+                aiWeaponHold = false;
             }
 
             if (aiFists == true)
             {
                 Debug.Log("Hit by Fists");
                 playerVals.pHealth -= 1;
-                StartCoroutine(aiAtkTimeout());
+                chasePlayer = false;
+                aiFists = false;
+                aiRun = false;
             }
         }
 
@@ -225,37 +313,52 @@ public class AIScript : MonoBehaviour
             if (collision.collider.name.Contains("Spear"))
             {
                 Debug.Log("Guard picked up Spear");
-                Destroy(GameObject.Find("Spear"));
-                Destroy(GameObject.Find("SpearPart"));
+                xRand = Random.Range(31.0f, -6.0f);
+                zRand = Random.Range(21.0f, -8.0f);
+                GameObject.Find("Spear").transform.position = new Vector3(xRand, 1.0f, zRand);
+                GameObject.Find("SpearPart").transform.position = new Vector3(xRand, -5.0f, zRand);
                 aiSpear = true;
                 chaseSpear = false;
+                chaseAxe = false;
+                chaseSword = false;
                 aiWeaponHold = true;
                 aiFists = false;
                 aiRun = false;
+                chasePlayer = true;
             }
 
             if (collision.collider.name.Contains("Sword"))
             {
                 Debug.Log("Guard picked up Sword");
-                Destroy(GameObject.Find("Sword"));
-                Destroy(GameObject.Find("SwordPart"));
+                xRand = Random.Range(31.0f, -6.0f);
+                zRand = Random.Range(21.0f, -8.0f);
+                GameObject.Find("Sword").transform.position = new Vector3(xRand, 1.0f, zRand);
+                GameObject.Find("SwordPart").transform.position = new Vector3(xRand, -5.0f, zRand);
+                chaseSpear = false;
+                chaseAxe = false;
                 chaseSword = false;
                 aiSword = true;
                 aiWeaponHold = true;
                 aiFists = false;
                 aiRun = false;
+                chasePlayer = true;
             }
 
             if (collision.collider.name.Contains("Axe"))
             {
                 Debug.Log("Guard picked up Axe");
-                Destroy(GameObject.Find("Axe"));
-                Destroy(GameObject.Find("AxePart"));
+                xRand = Random.Range(31.0f, -6.0f);
+                zRand = Random.Range(21.0f, -8.0f);
+                GameObject.Find("Axe").transform.position = new Vector3(xRand, -5.0f, zRand);
+                GameObject.Find("AxePart").transform.position = new Vector3(xRand, -5.0f, zRand);
                 aiAxe = true;
+                chaseSpear = false;
                 chaseAxe = false;
+                chaseSword = false;
                 aiWeaponHold = true;
                 aiFists = false;
                 aiRun = false;
+                chasePlayer = true;
             }
         }
 

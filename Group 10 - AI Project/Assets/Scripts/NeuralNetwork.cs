@@ -76,6 +76,7 @@ public class NeuralNetwork : MonoBehaviour
                 for (int u = 0; u < backupPerceptronLayer; u++)
                 {
                     randVal = Random.Range(0.0f, 1.0f);
+                    Debug.Log("Weight #" + u + " is: " + randVal);
                     perceptronWeights[u] = randVal;
                 }
 
