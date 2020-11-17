@@ -13,9 +13,18 @@ public class AIScript : MonoBehaviour
     float swordDistance;
     float spearDistance;
 
+    NeuralNetwork ntwrk;
+    float[] inputs = { 0.6f, 0.8f, 0.9f };
+    float[] outputs = { 0.0f, 0.0f, 0.0f };
+
+    int[] layers = { 7, 3, 4 };
+
+    float netOutputs;
+
     //Other Variables
     public GameObject guardPf;
     GameObject player;
+    GameObject guard;
     Player playerVals;
 
     Vector3 guardSpawnPos;
@@ -45,6 +54,9 @@ public class AIScript : MonoBehaviour
         aiAnim = GetComponent<Animator>();
         player = GameObject.Find("player");
         playerVals = player.GetComponent<Player>();
+        guard = GameObject.Find("guard");
+        ntwrk = guard.GetComponent<NeuralNetwork>();
+        ntwrk = new NeuralNetwork(layers);
     }
 
     // Update is called once per frame
@@ -140,6 +152,18 @@ public class AIScript : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.U))
         {
             aiFlee = true;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Y))
+        {
+            chasePlayer = false;
+            aiRun = false;
+        }
+
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            outputs = ntwrk.feedFrwrd(inputs);
+            Debug.Log("Outputs are: " + outputs[1] + outputs[2] + outputs[3]);
         }
     }
 
