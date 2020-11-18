@@ -32,6 +32,9 @@ public class Player : MonoBehaviour
 
     bool canAttack = false;
 
+    float xRand;
+    float zRand;
+
     void Start()
     {
         guard = GameObject.Find("guard");
@@ -90,7 +93,7 @@ public class Player : MonoBehaviour
                 Debug.Log("Axe Attack");
                 canMove = false;
                 StartCoroutine(animReset());
-                if (canMove == true)
+                if (canAttack == true)
                 {
                     Debug.Log("Hit enemy with axe!");
                     aiGuard.aiHealth -= 3;
@@ -158,8 +161,10 @@ public class Player : MonoBehaviour
             if (collision.collider.name.Contains("Axe"))
             {
                 Debug.Log("Picked up Axe!");
-                GameObject.Find("Axe").transform.position = new Vector3(0.0f, 0.0f, -80.0f);
-                GameObject.Find("AxePart").transform.position = new Vector3(0.0f, 0.0f, -80.0f);
+                xRand = Random.Range(31.0f, -6.0f);
+                zRand = Random.Range(21.0f, -8.0f);
+                GameObject.Find("Axe").transform.position = new Vector3(xRand, -5.0f, zRand);
+                GameObject.Find("AxePart").transform.position = new Vector3(xRand, -5.0f, zRand);
                 axeHold = true;
                 weaponHeld = true;
                 fists = false;
@@ -168,8 +173,10 @@ public class Player : MonoBehaviour
             if (collision.collider.name.Contains("Sword"))
             {
                 Debug.Log("Picked up Sword!");
-                GameObject.Find("Sword").transform.position = new Vector3(0.0f, 0.0f, -80.0f);
-                GameObject.Find("SwordPart").transform.position = new Vector3(0.0f, 0.0f, -80.0f);
+                xRand = Random.Range(31.0f, -6.0f);
+                zRand = Random.Range(21.0f, -8.0f);
+                GameObject.Find("Sword").transform.position = new Vector3(xRand, 1.0f, zRand);
+                GameObject.Find("SwordPart").transform.position = new Vector3(xRand, -5.0f, zRand);
                 swordHold = true;
                 weaponHeld = true;
                 fists = false;
@@ -178,8 +185,10 @@ public class Player : MonoBehaviour
             if (collision.collider.name.Contains("Spear"))
             {
                 Debug.Log("Picked up Spear!");
-                GameObject.Find("Spear").transform.position = new Vector3(0.0f, 0.0f, -80.0f);
-                GameObject.Find("SpearPart").transform.position = new Vector3(0.0f, 0.0f, -80.0f);
+                xRand = Random.Range(31.0f, -6.0f);
+                zRand = Random.Range(21.0f, -8.0f);
+                GameObject.Find("Spear").transform.position = new Vector3(xRand, 1.0f, zRand);
+                GameObject.Find("SpearPart").transform.position = new Vector3(xRand, -5.0f, zRand);
                 spearHold = true;
                 weaponHeld = true;
                 fists = false;

@@ -19,7 +19,7 @@ public class NeuralNetwork : MonoBehaviour
     float randVal;
     float randVal2;
 
-    float bias = 0.3f;
+    float value;
 
     float currWeight;
 
@@ -103,10 +103,10 @@ public class NeuralNetwork : MonoBehaviour
             {
                 for (int p = 0; p < neurons[i - 1].Length; p++)
                 {
-                    bias += weights[i - 1][o][p] * neurons[i - 1][p];
+                    value += weights[i - 1][o][p] * neurons[i - 1][p];
                 }
 
-                neurons[i][o] = Mathf.Tan(bias);
+                neurons[i][o] = Mathf.Tan(value);
             }
         }
 
@@ -124,9 +124,43 @@ public class NeuralNetwork : MonoBehaviour
                     currWeight = weights[i][o][p];
 
                     //Change the current weight
-                    randVal2 = Random.Range(0.0f, 1000.0f);
+                    randVal2 = Random.Range(0.0f, 1.0f);
+
+                    currWeight = randVal2;
 
                     weights[i][o][p] = currWeight;
+
+                    Debug.Log("Weight at layer: " + weights[i] + ", " + weights[o] + ", " + weights[p]);
+                }
+            }
+        }
+    }
+    
+    public void adjHealthWeights(float pHealth, float aiHealth)
+    {
+        //Assigning low / high health
+        if (aiHealth > pHealth)
+        {
+            Debug.Log("AI Health is higher than player health");
+            for (int i = 0; i < weights[0].Length; i++)
+            {
+                Debug.Log("length: " + weights[1].Length);
+                currWeight = weights[0][0][i];
+
+                // If current weight is low
+                if (currWeight <= 0.5f)
+                {
+                    randVal2 = Random.Range(0.2f, 0.3f);
+                    currWeight += randVal2;
+                    Debug.Log("Weight increased by: " + randVal2 + ". New Weight is: " + currWeight); 
+                }
+
+                // If current weight is high
+                if (currWeight > 0.5f)
+                {
+                    randVal2 = Random.Range(0.05f, 0.1f);
+                    currWeight += randVal2;
+                    Debug.Log("Weight increased by: " + randVal2 + ". New Weight is: " + currWeight);
                 }
             }
         }

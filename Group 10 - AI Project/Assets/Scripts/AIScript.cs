@@ -9,10 +9,11 @@ public class AIScript : MonoBehaviour
 
     //AI Parameters
     public float aiHealth = 5.0f;
-    public float pHealth = 5.0f;
+    public float pHealth = 2.0f;
 
-    public float aiPos;
-    public float pPos;
+    public float distanceAiP;
+    public Vector3 pPos;
+    public Vector3 aiPos;
 
     float axeDistance;
     float swordDistance;
@@ -72,6 +73,7 @@ public class AIScript : MonoBehaviour
         guard = GameObject.Find("guard");
         ntwrk = guard.GetComponent<NeuralNetwork>();
         ntwrk = new NeuralNetwork(layers);
+        
     }
 
     // Update is called once per frame
@@ -197,19 +199,22 @@ public class AIScript : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.M))
         {
-            aiPos = GameObject.Find("guard").transform.position.x + GameObject.Find("guard").transform.position.z;
-            Debug.Log("AI Pos: " + aiPos);
+            aiPos = GameObject.Find("guard").transform.position;
 
-            pPos = GameObject.Find("player").transform.position.x + GameObject.Find("player").transform.position.z;
-            Debug.Log("Player Pos: " + pPos);
+            pPos = GameObject.Find("player").transform.position;
 
-            inputs[0] = aiPos;
-            inputs[1] = pPos;
-            inputs[2] = aiHealth;
-            inputs[3] = pPos;
+            distanceAiP = Vector3.Distance(aiPos, pPos);
+            Debug.Log("Distance is: " + distanceAiP);
+
+            inputs[0] = distanceAiP;
+            inputs[1] = aiHealth;
+            inputs[2] = pHealth;
 
             outputs = ntwrk.feedFrwrd(inputs);
             Debug.Log("Outputs are: " + outputs[0] + "," + outputs[1] + ", " + outputs[2] + ", " + outputs[3]);
+
+            //ntwrk.train();
+            //ntwrk.adjHealthWeights(2.0f, 5.0f);
 
             //Check which output is higher and assign output to an action:
             if (outputs.Max() == outputs[0])
