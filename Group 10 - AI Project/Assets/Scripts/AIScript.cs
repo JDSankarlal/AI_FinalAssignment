@@ -44,6 +44,8 @@ public class AIScript : MonoBehaviour
     GameObject aiPngSword;
     GameObject aiPngSpear;
 
+    GameObject hitPlayer;
+
     Vector3 aiPngPos;
 
     Vector3 guardSpawnPos;
@@ -85,6 +87,8 @@ public class AIScript : MonoBehaviour
         aiPngAxe = GameObject.Find("axePngAi");
         aiPngSpear = GameObject.Find("spPngAi");
         aiPngSword = GameObject.Find("swPngAi");
+
+        hitPlayer = GameObject.Find("pHit");
 
     }
 

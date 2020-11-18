@@ -19,6 +19,8 @@ public class Player : MonoBehaviour
     GameObject pngFist;
     GameObject pngAxe;
 
+    GameObject hitEnemy;
+
     AIScript aiGuard;
 
     Vector3 backupPos;
@@ -54,6 +56,8 @@ public class Player : MonoBehaviour
         pngSword = GameObject.Find("swPng");
         pngAxe = GameObject.Find("axePng");
         pngSpear = GameObject.Find("spPng");
+
+        hitEnemy = GameObject.Find("aiHit");
     }
 
     // Update is called once per frame
