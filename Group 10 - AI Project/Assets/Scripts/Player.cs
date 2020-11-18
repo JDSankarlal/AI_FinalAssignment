@@ -13,6 +13,12 @@ public class Player : MonoBehaviour
     // Other Variables
     public GameObject playerChar;
     GameObject guard;
+
+    GameObject pngSword;
+    GameObject pngSpear;
+    GameObject pngFist;
+    GameObject pngAxe;
+
     AIScript aiGuard;
 
     Vector3 backupPos;
@@ -35,17 +41,63 @@ public class Player : MonoBehaviour
     float xRand;
     float zRand;
 
+    Vector3 speechBubPos;
+
     void Start()
     {
         guard = GameObject.Find("guard");
         playerAnims = GetComponent<Animator>();
         aiGuard = guard.GetComponent<AIScript>();
         backupPos = playerChar.transform.position;
+
+        pngFist = GameObject.Find("fistsPng");
+        pngSword = GameObject.Find("swPng");
+        pngAxe = GameObject.Find("axePng");
+        pngSpear = GameObject.Find("spPng");
     }
 
     // Update is called once per frame
     void Update()
     {
+        //Item Bubbles Conditions
+        speechBubPos = new Vector3(playerChar.transform.position.x - 2.5f, 3.0f, playerChar.transform.position.z);
+
+        if (fists == true)
+        {
+            pngFist.SetActive(true);
+            pngAxe.SetActive(false);
+            pngSpear.SetActive(false);
+            pngSword.SetActive(false);
+            pngFist.transform.position = speechBubPos;    
+        }
+
+        if (axeHold == true)
+        {
+            pngFist.SetActive(false);
+            pngAxe.SetActive(true);
+            pngSpear.SetActive(false);
+            pngSword.SetActive(false);
+            pngAxe.transform.position = speechBubPos;
+        }
+
+        if (swordHold == true)
+        {
+            pngFist.SetActive(false);
+            pngAxe.SetActive(false);
+            pngSpear.SetActive(false);
+            pngSword.SetActive(true);
+            pngSword.transform.position = speechBubPos;
+        }
+
+        if (spearHold == true)
+        {
+            pngFist.SetActive(false);
+            pngAxe.SetActive(false);
+            pngSpear.SetActive(true);
+            pngSword.SetActive(false);
+            pngSpear.transform.position = speechBubPos;
+        }
+
         //Movement
         if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S))
         {

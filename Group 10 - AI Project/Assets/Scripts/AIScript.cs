@@ -39,6 +39,13 @@ public class AIScript : MonoBehaviour
     GameObject guard;
     Player playerVals;
 
+    GameObject aiPngFist;
+    GameObject aiPngAxe;
+    GameObject aiPngSword;
+    GameObject aiPngSpear;
+
+    Vector3 aiPngPos;
+
     Vector3 guardSpawnPos;
 
     Animator aiAnim;
@@ -74,11 +81,64 @@ public class AIScript : MonoBehaviour
         ntwrk = guard.GetComponent<NeuralNetwork>();
         ntwrk = new NeuralNetwork(layers);
         
+        aiPngFist = GameObject.Find("fistsPngAi");
+        aiPngAxe = GameObject.Find("axePngAi");
+        aiPngSpear = GameObject.Find("spPngAi");
+        aiPngSword = GameObject.Find("swPngAi");
+
     }
 
     // Update is called once per frame
     void Update()
     {
+
+        aiPngPos = new Vector3(guardPf.transform.position.x - 2.5f, 3.0f, guardPf.transform.position.z);
+
+        if (aiFists == true)
+        {
+            aiPngFist.SetActive(true);
+            aiPngAxe.SetActive(false);
+            aiPngSword.SetActive(false);
+            aiPngSpear.SetActive(false);
+            aiPngFist.transform.position = aiPngPos;
+        }
+
+        if (aiSword == true)
+        {
+            aiPngFist.SetActive(false);
+            aiPngAxe.SetActive(false);
+            aiPngSword.SetActive(true);
+            aiPngSpear.SetActive(false);
+            aiPngSword.transform.position = aiPngPos;
+        }
+
+        if (aiAxe == true)
+        {
+            aiPngFist.SetActive(false);
+            aiPngAxe.SetActive(true);
+            aiPngSword.SetActive(false);
+            aiPngSpear.SetActive(false);
+            aiPngAxe.transform.position = aiPngPos;
+        }
+
+        if (aiSpear == true)
+        {
+            aiPngFist.SetActive(false);
+            aiPngAxe.SetActive(false);
+            aiPngSword.SetActive(false);
+            aiPngSpear.SetActive(true);
+            aiPngSpear.transform.position = aiPngPos;
+        }
+
+        if (aiWeaponHold == false)
+        {
+            aiPngFist.SetActive(true);
+            aiPngAxe.SetActive(false);
+            aiPngSword.SetActive(false);
+            aiPngSpear.SetActive(false);
+            aiPngFist.transform.position = aiPngPos;
+        }
+
         //AI repawn condition
         if (aiHealth <= 0)
         {
