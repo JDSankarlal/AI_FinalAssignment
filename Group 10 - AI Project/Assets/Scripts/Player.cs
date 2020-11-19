@@ -7,8 +7,7 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
 
     // Player Parameters
-    public int pHealth = 5;
-    public float pSpeed;
+    public float pHealth = 5.0f;
 
     // Other Variables
     public GameObject playerChar;
@@ -63,6 +62,11 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (pHealth <= 0.0f)
+        {
+            flee = true;
+        }
+
         //Item Bubbles Conditions
         speechBubPos = new Vector3(playerChar.transform.position.x - 2.5f, 3.0f, playerChar.transform.position.z);
 

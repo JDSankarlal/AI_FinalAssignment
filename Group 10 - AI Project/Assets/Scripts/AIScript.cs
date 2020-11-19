@@ -9,15 +9,23 @@ public class AIScript : MonoBehaviour
 
     //AI Parameters
     public float aiHealth = 5.0f;
-    public float pHealth = 2.0f;
+    public float pHealth = 5.0f;
+
+    float healthDif;
 
     public float distanceAiP;
     public Vector3 pPos;
     public Vector3 aiPos;
 
-    float axeDistance;
-    float swordDistance;
-    float spearDistance;
+    Vector3 axePos;
+    Vector3 swordPos;
+    Vector3 spearPos;
+    Vector3 fleePos;
+
+    float axeDist;
+    float swordDist;
+    float spearDist;
+    float fleeDist;
 
     float xRand;
     float zRand;
@@ -25,13 +33,13 @@ public class AIScript : MonoBehaviour
     NeuralNetwork ntwrk;
 
     //Sets up input layer array
-    float[] inputs = { 0.0f, 0.0f, 0.0f, 0.0f};
+    float[] inputs = { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
 
     //Sets up output layer array
     float[] outputs;
 
     //Sets up the input, hidden, and output layers
-    int[] layers = {7, 3, 4 };
+    int[] layers = {9, 4, 5 };
 
     //Other Variables
     public GameObject guardPf;
@@ -65,6 +73,11 @@ public class AIScript : MonoBehaviour
     bool aiFists = true;
     bool aiWeaponHold = false;
 
+    float spearDmg = 1.5f;
+    float swordDmg = 3.0f;
+    float axeDmg = 2.0f;
+    float fistsDmg = 1.0f;
+
     bool aiRun = false;
     bool aiAtk = false;
     bool aiFlee = false;
@@ -72,6 +85,8 @@ public class AIScript : MonoBehaviour
     int guardCount = 1;
 
     bool isDeciding = false;
+
+    int decisionAmount = 0;
 
     void Start()
     {
@@ -95,9 +110,13 @@ public class AIScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        //Constantly update position of weapon speech bubbles
         aiPngPos = new Vector3(guardPf.transform.position.x - 2.5f, 3.0f, guardPf.transform.position.z);
+        swordPos = GameObject.Find("Sword").transform.position;
+        spearPos = GameObject.Find("Spear").transform.position;
+        axePos = GameObject.Find("Axe").transform.position;
 
+        //Weapon Speech Bubble Icon Conditions
         if (aiFists == true)
         {
             aiPngFist.SetActive(true);
@@ -143,7 +162,7 @@ public class AIScript : MonoBehaviour
             aiPngFist.transform.position = aiPngPos;
         }
 
-        //AI repawn condition
+        //AI respawn condition
         if (aiHealth <= 0)
         {
             isKO = true;
@@ -152,7 +171,9 @@ public class AIScript : MonoBehaviour
             chaseSword = false;
             chasePlayer = false;
             guardPf.transform.position = new Vector3(0.0f, 0.0f, -80.0f);
+            decisionAmount = 0;
             StartCoroutine(guardRespawn());
+            StartCoroutine(aiAtkTimeout());
             Debug.Log("Guard #: " + guardCount + " has appeared!");
             guardCount += 1;
 
@@ -160,7 +181,7 @@ public class AIScript : MonoBehaviour
 
         }
 
-        //Chase weapon condition
+        //Chase weapon conditions
         if (chaseAxe == true)
         {
             guardPf.transform.position = Vector3.MoveTowards(guardPf.transform.position, new Vector3(GameObject.Find("Axe").transform.position.x, guardPf.transform.position.y, GameObject.Find("Axe").transform.position.z), 0.03f);
@@ -185,7 +206,7 @@ public class AIScript : MonoBehaviour
             aiRun = true;
         }
 
-        //Running condition
+        //Running animation conditions
         if (aiRun == true)
         {
             aiAnim.SetBool("isRunning", true);
@@ -213,80 +234,57 @@ public class AIScript : MonoBehaviour
             aiRun = true;
         }
 
-        //Debug
-        if(Input.GetKeyDown(KeyCode.L))
-        {
-            aiRun = true;
-        }
-
-        if (Input.GetKeyDown(KeyCode.K))
-        {
-            aiRun = false;
-        }
-
-        if (Input.GetKeyDown(KeyCode.J))
-        {
-            aiAtk = true;
-        }
-
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            chaseSword = true;
-        }
-
-        if (Input.GetKeyDown(KeyCode.O))
-        {
-            chasePlayer = true;
-        }
-
-        if (Input.GetKeyDown(KeyCode.U))
-        {
-            aiFlee = true;
-        }
-
-        if (Input.GetKeyDown(KeyCode.Y))
-        {
-            chasePlayer = false;
-            aiRun = false;
-        }
-
         // Neural Net
-        //if (Input.GetKeyDown(KeyCode.M))
-        //{
-        //    isDeciding = true;
-        //}
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            isDeciding = true;
+            decisionAmount = 1;
+        }
 
         if (Input.GetKeyDown(KeyCode.N))
         {
             isDeciding = false;
         }
 
-        if (Input.GetKeyDown(KeyCode.M))
+        if (isDeciding == true && decisionAmount == 1)
         {
             aiPos = GameObject.Find("guard").transform.position;
-
             pPos = GameObject.Find("player").transform.position;
 
+
+
+            healthDif = aiHealth - pHealth;
+
+            swordDist = Vector3.Distance(aiPos, swordPos);
+            axeDist = Vector3.Distance(aiPos, axePos);
+            spearDist = Vector3.Distance(aiPos, spearPos);
             distanceAiP = Vector3.Distance(aiPos, pPos);
             Debug.Log("Distance is: " + distanceAiP);
 
-            inputs[0] = distanceAiP;
-            inputs[1] = aiHealth;
-            inputs[2] = pHealth;
+            inputs[0] = healthDif;
+            inputs[1] = distanceAiP;
+            inputs[2] = swordDist;
+            inputs[3] = spearDist;
+            inputs[4] = axeDist;
+            inputs[5] = swordDmg;
+            inputs[6] = spearDmg;
+            inputs[7] = axeDmg;
+            inputs[8] = aiHealth;
 
             outputs = ntwrk.feedFrwrd(inputs);
             Debug.Log("Outputs are: " + outputs[0] + "," + outputs[1] + ", " + outputs[2] + ", " + outputs[3]);
 
             //ntwrk.train();
-            //ntwrk.adjHealthWeights(2.0f, 5.0f);
+            ntwrk.trainAI(inputs[0], inputs[1], inputs[2], inputs[3], inputs[4], inputs[8]);
 
             //Check which output is higher and assign output to an action:
             if (outputs.Max() == outputs[0])
             {
                 //Do output action #1
-                Debug.Log("Chasing player");
+                Debug.Log("Chasing player with fists");
                 chasePlayer = true;
                 aiFists = true;
+                decisionAmount = 0;
             }
 
             if (outputs.Max() == outputs[1])
@@ -294,6 +292,7 @@ public class AIScript : MonoBehaviour
                 //Do output action #2
                 Debug.Log("Using axe");
                 chaseAxe = true;
+                decisionAmount = 0;
             }
 
             if (outputs.Max() == outputs[2])
@@ -301,6 +300,7 @@ public class AIScript : MonoBehaviour
                 //Do output action #3
                 Debug.Log("Using sword");
                 chaseSword = true;
+                decisionAmount = 0;
             }
 
             if (outputs.Max() == outputs[3])
@@ -308,6 +308,14 @@ public class AIScript : MonoBehaviour
                 //Do output action #3
                 Debug.Log("Using spear");
                 chaseSpear = true;
+                decisionAmount = 0;
+            }
+
+            if (outputs.Max() == outputs[4])
+            {
+                Debug.Log("Fleeing");
+                aiFlee = true;
+                decisionAmount = 0;
             }
 
         }
@@ -325,6 +333,7 @@ public class AIScript : MonoBehaviour
     public IEnumerator aiAtkTimeout()
     {
         yield return new WaitForSeconds(1f);
+        decisionAmount = 1;
         Debug.Log("Timeout");
     }
 
@@ -339,46 +348,59 @@ public class AIScript : MonoBehaviour
             if (aiAxe == true)
             {
                 Debug.Log("Hit by Axe");
-                playerVals.pHealth -= 3;
+                playerVals.pHealth -= axeDmg;
                 chasePlayer = false;
                 aiAxe = false;
                 aiRun = false;
+                aiFists = false;
                 aiWeaponHold = false;
+                isDeciding = true;
+                StartCoroutine(aiAtkTimeout());
             }
 
             if (aiSword == true)
             {
                 Debug.Log("Hit by Sword");
-                playerVals.pHealth -= 2;
+                playerVals.pHealth -= swordDmg;
                 chasePlayer = false;
                 aiSword = false;
                 aiRun = false;
+                aiFists = false;
                 aiWeaponHold = false;
+                isDeciding = true;
+                StartCoroutine(aiAtkTimeout());
             }
 
             if (aiSpear == true)
             {
                 Debug.Log("Hit by Spear");
-                playerVals.pHealth -= 2;
+                playerVals.pHealth -= spearDmg;
                 chasePlayer = false;
                 aiSpear = false;
                 aiRun = false;
+                aiFists = false;
                 aiWeaponHold = false;
+                isDeciding = true;
+                StartCoroutine(aiAtkTimeout());
             }
 
             if (aiFists == true)
             {
                 Debug.Log("Hit by Fists");
-                playerVals.pHealth -= 1;
+                playerVals.pHealth -= fistsDmg;
                 chasePlayer = false;
                 aiFists = false;
                 aiRun = false;
+                isDeciding = true;
+                StartCoroutine(aiAtkTimeout());
             }
         }
 
-        //AI Weapon Pickup
+        //AI Weapon Pickup Conditions
+        //If AI is not holding a weapon
         if (aiWeaponHold == false)
         {
+            // AI Collides with a Spear
             if (collision.collider.name.Contains("Spear"))
             {
                 Debug.Log("Guard picked up Spear");
@@ -393,9 +415,12 @@ public class AIScript : MonoBehaviour
                 aiWeaponHold = true;
                 aiFists = false;
                 aiRun = false;
+                aiFlee = false;
                 chasePlayer = true;
+                isDeciding = false;
             }
 
+            // AI Collides with Sword
             if (collision.collider.name.Contains("Sword"))
             {
                 Debug.Log("Guard picked up Sword");
@@ -410,9 +435,12 @@ public class AIScript : MonoBehaviour
                 aiWeaponHold = true;
                 aiFists = false;
                 aiRun = false;
+                aiFlee = false;
                 chasePlayer = true;
+                isDeciding = false;
             }
 
+            //AI Collides with Axe
             if (collision.collider.name.Contains("Axe"))
             {
                 Debug.Log("Guard picked up Axe");
@@ -427,7 +455,9 @@ public class AIScript : MonoBehaviour
                 aiWeaponHold = true;
                 aiFists = false;
                 aiRun = false;
+                aiFlee = false;
                 chasePlayer = true;
+                isDeciding = false;
             }
         }
 
@@ -438,6 +468,7 @@ public class AIScript : MonoBehaviour
             aiRun = false;
             Debug.Log("Guard fled the arena");
             //Code for respawn similar to player
+            aiHealth = 0;
         }
     }
 
