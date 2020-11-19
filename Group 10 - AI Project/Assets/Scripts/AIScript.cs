@@ -9,7 +9,7 @@ public class AIScript : MonoBehaviour
 
     //AI Parameters
     public float aiHealth = 5.0f;
-    public float pHealth = 5.0f;
+    public float pHealth = 2.0f;
 
     float healthDif;
 
@@ -25,7 +25,7 @@ public class AIScript : MonoBehaviour
     float axeDist;
     float swordDist;
     float spearDist;
-    float fleeDist;
+    //float fleeDist;
 
     float xRand;
     float zRand;
@@ -53,6 +53,10 @@ public class AIScript : MonoBehaviour
     GameObject aiPngSpear;
 
     GameObject hitPlayer;
+    GameObject aiPunchSfx;
+    GameObject aiSlashSfx;
+    GameObject aiSwooshSfx;
+    GameObject aiGrabSfx;
 
     Vector3 aiPngPos;
 
@@ -104,6 +108,10 @@ public class AIScript : MonoBehaviour
         aiPngSword = GameObject.Find("swPngAi");
 
         hitPlayer = GameObject.Find("pHit");
+        aiPunchSfx = GameObject.Find("punch");
+        aiSlashSfx = GameObject.Find("slash");
+        aiSwooshSfx = GameObject.Find("swoosh");
+        aiGrabSfx = GameObject.Find("grab");
 
     }
 
@@ -272,7 +280,7 @@ public class AIScript : MonoBehaviour
             inputs[8] = aiHealth;
 
             outputs = ntwrk.feedFrwrd(inputs);
-            Debug.Log("Outputs are: " + outputs[0] + "," + outputs[1] + ", " + outputs[2] + ", " + outputs[3]);
+            Debug.Log("Outputs are: " + outputs[0] + "," + outputs[1] + ", " + outputs[2] + ", " + outputs[3] + ", " + outputs[4]);
 
             //ntwrk.train();
             ntwrk.trainAI(inputs[0], inputs[1], inputs[2], inputs[3], inputs[4], inputs[8]);
@@ -313,7 +321,8 @@ public class AIScript : MonoBehaviour
 
             if (outputs.Max() == outputs[4])
             {
-                Debug.Log("Fleeing");
+                Debug.Log("Output 1 is: " + outputs[0] + "Output 2 is: " + outputs[1] + "Output 3 is: " + outputs[2] + "Output 4 is: " + outputs[3] + "Output 5 is: " + outputs[4]);
+                Debug.Log("Fleeing. Output was: " + outputs[4] );
                 aiFlee = true;
                 decisionAmount = 0;
             }
@@ -343,6 +352,7 @@ public class AIScript : MonoBehaviour
         if (collision.collider.name.Contains("player"))
         {
             Debug.Log("AI Hits Player");
+            aiSwooshSfx.GetComponent<AudioSource>().Play(0);
             aiAtk = true;
 
             if (aiAxe == true)
@@ -355,6 +365,8 @@ public class AIScript : MonoBehaviour
                 aiFists = false;
                 aiWeaponHold = false;
                 isDeciding = true;
+                hitPlayer.GetComponent<ParticleSystem>().Play();
+                aiSlashSfx.GetComponent<AudioSource>().Play(0);
                 StartCoroutine(aiAtkTimeout());
             }
 
@@ -368,6 +380,8 @@ public class AIScript : MonoBehaviour
                 aiFists = false;
                 aiWeaponHold = false;
                 isDeciding = true;
+                hitPlayer.GetComponent<ParticleSystem>().Play();
+                aiSlashSfx.GetComponent<AudioSource>().Play(0);
                 StartCoroutine(aiAtkTimeout());
             }
 
@@ -381,6 +395,8 @@ public class AIScript : MonoBehaviour
                 aiFists = false;
                 aiWeaponHold = false;
                 isDeciding = true;
+                hitPlayer.GetComponent<ParticleSystem>().Play();
+                aiSlashSfx.GetComponent<AudioSource>().Play(0);
                 StartCoroutine(aiAtkTimeout());
             }
 
@@ -392,6 +408,8 @@ public class AIScript : MonoBehaviour
                 aiFists = false;
                 aiRun = false;
                 isDeciding = true;
+                hitPlayer.GetComponent<ParticleSystem>().Play();
+                aiPunchSfx.GetComponent<AudioSource>().Play(0);
                 StartCoroutine(aiAtkTimeout());
             }
         }
@@ -406,6 +424,7 @@ public class AIScript : MonoBehaviour
                 Debug.Log("Guard picked up Spear");
                 xRand = Random.Range(31.0f, -6.0f);
                 zRand = Random.Range(21.0f, -8.0f);
+                aiGrabSfx.GetComponent<AudioSource>().Play(0);
                 GameObject.Find("Spear").transform.position = new Vector3(xRand, 1.0f, zRand);
                 GameObject.Find("SpearPart").transform.position = new Vector3(xRand, -5.0f, zRand);
                 aiSpear = true;
@@ -426,6 +445,7 @@ public class AIScript : MonoBehaviour
                 Debug.Log("Guard picked up Sword");
                 xRand = Random.Range(31.0f, -6.0f);
                 zRand = Random.Range(21.0f, -8.0f);
+                aiGrabSfx.GetComponent<AudioSource>().Play(0);
                 GameObject.Find("Sword").transform.position = new Vector3(xRand, 1.0f, zRand);
                 GameObject.Find("SwordPart").transform.position = new Vector3(xRand, -5.0f, zRand);
                 chaseSpear = false;
@@ -446,6 +466,7 @@ public class AIScript : MonoBehaviour
                 Debug.Log("Guard picked up Axe");
                 xRand = Random.Range(31.0f, -6.0f);
                 zRand = Random.Range(21.0f, -8.0f);
+                aiGrabSfx.GetComponent<AudioSource>().Play(0);
                 GameObject.Find("Axe").transform.position = new Vector3(xRand, -5.0f, zRand);
                 GameObject.Find("AxePart").transform.position = new Vector3(xRand, -5.0f, zRand);
                 aiAxe = true;

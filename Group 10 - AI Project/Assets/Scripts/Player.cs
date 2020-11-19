@@ -19,6 +19,10 @@ public class Player : MonoBehaviour
     GameObject pngAxe;
 
     GameObject hitEnemy;
+    GameObject punchSfx;
+    GameObject slashSfx;
+    GameObject swooshSfx;
+    GameObject grabSfx;
 
     AIScript aiGuard;
 
@@ -42,6 +46,8 @@ public class Player : MonoBehaviour
     float xRand;
     float zRand;
 
+    int pLives = 3;
+
     Vector3 speechBubPos;
 
     void Start()
@@ -57,6 +63,10 @@ public class Player : MonoBehaviour
         pngSpear = GameObject.Find("spPng");
 
         hitEnemy = GameObject.Find("aiHit");
+        punchSfx = GameObject.Find("punch");
+        slashSfx = GameObject.Find("slash");
+        swooshSfx = GameObject.Find("swoosh");
+        grabSfx = GameObject.Find("grab");
     }
 
     // Update is called once per frame
@@ -147,6 +157,8 @@ public class Player : MonoBehaviour
         //Attack
         if (Input.GetKeyDown(KeyCode.Space))
         {
+            swooshSfx.GetComponent<AudioSource>().Play(0);
+
             if (axeHold == true)
             {
                 playerAnims.SetBool("attacking", true);
@@ -157,7 +169,12 @@ public class Player : MonoBehaviour
                 {
                     Debug.Log("Hit enemy with axe!");
                     aiGuard.aiHealth -= 3;
+                    axeHold = false;
+                    weaponHeld = false;
+                    fists = true;
                     Debug.Log("Guard's Health is: " + aiGuard.aiHealth);
+                    hitEnemy.GetComponent<ParticleSystem>().Play();
+                    slashSfx.GetComponent<AudioSource>().Play(1);
                 }
             }
 
@@ -171,7 +188,12 @@ public class Player : MonoBehaviour
                 {
                     Debug.Log("Hit enemy with sword!");
                     aiGuard.aiHealth -= 2;
+                    swordHold = false;
+                    weaponHeld = false;
+                    fists = true;
                     Debug.Log("Guard's Health is: " + aiGuard.aiHealth);
+                    hitEnemy.GetComponent<ParticleSystem>().Play();
+                    slashSfx.GetComponent<AudioSource>().Play(1);
                 }
             }
 
@@ -185,7 +207,12 @@ public class Player : MonoBehaviour
                 {
                     Debug.Log("Hit enemy with sword!");
                     aiGuard.aiHealth -= 2;
+                    spearHold = false;
+                    weaponHeld = false;
+                    fists = true;
                     Debug.Log("Guard's Health is: " + aiGuard.aiHealth);
+                    hitEnemy.GetComponent<ParticleSystem>().Play();
+                    slashSfx.GetComponent<AudioSource>().Play(1);
                 }
             }
 
@@ -199,6 +226,8 @@ public class Player : MonoBehaviour
                     Debug.Log("Hit enemy with fists!");
                     aiGuard.aiHealth -= 1;
                     Debug.Log("Guard's Health is: " + aiGuard.aiHealth);
+                    hitEnemy.GetComponent<ParticleSystem>().Play();
+                    punchSfx.GetComponent<AudioSource>().Play(0);
                 }
             }
         }
@@ -223,6 +252,7 @@ public class Player : MonoBehaviour
                 Debug.Log("Picked up Axe!");
                 xRand = Random.Range(31.0f, -6.0f);
                 zRand = Random.Range(21.0f, -8.0f);
+                grabSfx.GetComponent<AudioSource>().Play(0);
                 GameObject.Find("Axe").transform.position = new Vector3(xRand, -5.0f, zRand);
                 GameObject.Find("AxePart").transform.position = new Vector3(xRand, -5.0f, zRand);
                 axeHold = true;
@@ -235,6 +265,7 @@ public class Player : MonoBehaviour
                 Debug.Log("Picked up Sword!");
                 xRand = Random.Range(31.0f, -6.0f);
                 zRand = Random.Range(21.0f, -8.0f);
+                grabSfx.GetComponent<AudioSource>().Play(0);
                 GameObject.Find("Sword").transform.position = new Vector3(xRand, 1.0f, zRand);
                 GameObject.Find("SwordPart").transform.position = new Vector3(xRand, -5.0f, zRand);
                 swordHold = true;
@@ -247,6 +278,7 @@ public class Player : MonoBehaviour
                 Debug.Log("Picked up Spear!");
                 xRand = Random.Range(31.0f, -6.0f);
                 zRand = Random.Range(21.0f, -8.0f);
+                grabSfx.GetComponent<AudioSource>().Play(0);
                 GameObject.Find("Spear").transform.position = new Vector3(xRand, 1.0f, zRand);
                 GameObject.Find("SpearPart").transform.position = new Vector3(xRand, -5.0f, zRand);
                 spearHold = true;

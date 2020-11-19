@@ -21,7 +21,7 @@ public class NeuralNetwork : MonoBehaviour
 
     float backupWeight;
 
-    float value;
+    float value = 0.0f;
 
     float currWeight;
 
@@ -97,10 +97,11 @@ public class NeuralNetwork : MonoBehaviour
             {
                 for (int p = 0; p < neurons[i - 1].Length; p++)
                 {
-                    value += weights[i - 1][o][p] * neurons[i - 1][p];
+                    value = weights[i - 1][o][p] * neurons[i - 1][p];
                 }
 
-                neurons[i][o] = Mathf.Tan(value);
+                //Activation function for each perceptron (Sigmoid)
+                neurons[i][o] = value / (1 + Mathf.Abs(value));
             }
         }
 
@@ -214,6 +215,7 @@ public class NeuralNetwork : MonoBehaviour
                 {
                     randVal2 = Random.Range(0.2f, 0.3f);
                     weights[0][i][1] += randVal2;
+                    neurons[2][0] *= (weights[0][i][1]);
                     Debug.Log("Previous weight was: " + backupWeight);
                     Debug.Log("Weight increased by: " + randVal2 + ". New Weight is: " + currWeight);
                 }
@@ -223,6 +225,7 @@ public class NeuralNetwork : MonoBehaviour
                 {
                     randVal2 = Random.Range(0.05f, 0.1f);
                     weights[0][i][1] += randVal2;
+                    neurons[2][0] *= (weights[0][i][1]);
                     Debug.Log("Previous weight was: " + backupWeight);
                     Debug.Log("Weight increased by: " + randVal2 + ". New Weight is: " + currWeight);
 
@@ -249,8 +252,9 @@ public class NeuralNetwork : MonoBehaviour
                 {
                     randVal2 = Random.Range(0.05f, 0.1f);
                     weights[0][i][1] -= randVal2;
+                    neurons[2][0] *= (weights[0][i][1]);
                     Debug.Log("Previous weight was: " + backupWeight);
-                    Debug.Log("Weight increased by: " + randVal2 + ". New Weight is: " + currWeight);
+                    Debug.Log("Weight increased by: " + randVal2 + ". New Weight is: " + weights[0][i][1]);
 
                     //Limit the weight to 0.0f if it ever goes below that amount
                     if (currWeight <= 0.0f)
@@ -264,6 +268,7 @@ public class NeuralNetwork : MonoBehaviour
                 {
                     randVal2 = Random.Range(0.2f, 0.3f);
                     weights[0][i][1] -= randVal2;
+                    neurons[2][0] *= (weights[0][i][1]);
                     Debug.Log("Previous weight was: " + backupWeight);
                     Debug.Log("Weight increased by: " + randVal2 + ". New Weight is: " + currWeight);
                 }
@@ -289,6 +294,7 @@ public class NeuralNetwork : MonoBehaviour
                 {
                     randVal2 = Random.Range(0.2f, 0.3f);
                     weights[0][i][2] += randVal2;
+                    neurons[2][2] *= (weights[0][i][2]);
                     Debug.Log("Previous weight was: " + backupWeight);
                     Debug.Log("Weight increased by: " + randVal2 + ". New Weight is: " + currWeight);
                 }
@@ -298,6 +304,7 @@ public class NeuralNetwork : MonoBehaviour
                 {
                     randVal2 = Random.Range(0.05f, 0.1f);
                     weights[0][i][2] += randVal2;
+                    neurons[2][2] *= (weights[0][i][2]);
                     Debug.Log("Previous weight was: " + backupWeight);
                     Debug.Log("Weight increased by: " + randVal2 + ". New Weight is: " + currWeight);
 
@@ -332,6 +339,7 @@ public class NeuralNetwork : MonoBehaviour
                 {
                     randVal2 = Random.Range(0.2f, 0.3f);
                     weights[0][i][3] += randVal2;
+                    neurons[2][3] *= (weights[0][i][3]);
                     Debug.Log("Previous weight was: " + backupWeight);
                     Debug.Log("Weight increased by: " + randVal2 + ". New Weight is: " + currWeight);
                 }
@@ -341,6 +349,7 @@ public class NeuralNetwork : MonoBehaviour
                 {
                     randVal2 = Random.Range(0.05f, 0.1f);
                     weights[0][i][3] += randVal2;
+                    neurons[2][3] *= (weights[0][i][3]);
                     Debug.Log("Previous weight was: " + backupWeight);
                     Debug.Log("Weight increased by: " + randVal2 + ". New Weight is: " + currWeight);
 
@@ -375,6 +384,7 @@ public class NeuralNetwork : MonoBehaviour
                 {
                     randVal2 = Random.Range(0.2f, 0.3f);
                     weights[0][i][4] += randVal2;
+                    neurons[2][1] *= (weights[0][i][4]);
                     Debug.Log("Previous weight was: " + backupWeight);
                     Debug.Log("Weight increased by: " + randVal2 + ". New Weight is: " + currWeight);
                 }
@@ -384,6 +394,7 @@ public class NeuralNetwork : MonoBehaviour
                 {
                     randVal2 = Random.Range(0.05f, 0.1f);
                     weights[0][i][4] += randVal2;
+                    neurons[2][1] *= (weights[0][i][4]);
                     Debug.Log("Previous weight was: " + backupWeight);
                     Debug.Log("Weight increased by: " + randVal2 + ". New Weight is: " + currWeight);
 
@@ -410,13 +421,35 @@ public class NeuralNetwork : MonoBehaviour
         //If AI Health is critical, increase flee weight
         if (aiHealth >= 3.0f)
         {
-            for (int i = 0; i < weights[0].Length; i++)
+
+            for (int i = 0; i < 3; i++)
             {
-                Debug.Log("Cannot flee");
-                currWeight = weights[0][i][8];
+                //Accessing incoming weights towards Output Node #5
+                currWeight = weights[1][8][i];
                 backupWeight = currWeight;
 
-                weights[0][i][8] = 0.0f;
+                weights[1][8][i] *= 0.05f;
+                neurons[2][4] *= weights[1][8][i];
+
+                Debug.Log("Previous flee weight was: " + backupWeight);
+                Debug.Log("New Flee Weight is: " + weights[1][8][i]);
+            }
+        }
+
+        else if (aiHealth < 3.0f)
+        {
+
+            for (int i = 0; i < 3; i++)
+            {
+                //Accessing incoming weights towards Output Node #5
+                currWeight = weights[1][8][i];
+                backupWeight = currWeight;
+
+                weights[1][8][i] *= 0.9f;
+                neurons[2][4] *= weights[1][8][i];
+
+                Debug.Log("Previous flee weight was: " + backupWeight);
+                Debug.Log("New Flee Weight is: " + weights[1][8][i]);
             }
         }
         //Else, decrease it significantly
